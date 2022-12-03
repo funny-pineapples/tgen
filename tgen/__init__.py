@@ -1,4 +1,5 @@
 import random
+from typing import Optional
 
 import umsgpack
 
@@ -8,8 +9,11 @@ TextGeneratorModel = dict[str, set[str]]
 class TextGenerator:
     model: TextGeneratorModel
 
-    def __init__(self, model: TextGeneratorModel = {}):
-        self.model = model
+    def __init__(self, model: Optional[TextGeneratorModel] = None):
+        if model is None:
+            self.model = {}
+        else:
+            self.model = model
 
     @classmethod
     def load(cls, raw: bytes):
