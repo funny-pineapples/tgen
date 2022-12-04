@@ -26,11 +26,25 @@ class TextGenerator:
         model = {k: set(v) for k, v in unpacked.items()}
         return cls(model)
 
+    @classmethod
+    def from_samples(cls, samples: list[str]):
+        """Create generator and feed with given `samples`."""
+
+        generator = cls()
+        generator.feed_bulk(samples)
+        return generator
+
     def dump(self) -> bytes:
         """Serialize model to msgpack."""
 
         packable_model = {k: list(v) for k, v in self.model.items()}
         return umsgpack.packb(packable_model)
+
+    def feed_bulk(self, samples: list[str]):
+        """Feed text generation model with multiple samples."""
+
+        for sample in samples:
+            self.feed(sample)
 
     def feed(self, sample: str) -> None:
         """Feed text generation model."""
