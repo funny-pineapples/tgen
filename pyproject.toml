@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tgen"
-version = "0.2.0"
+version = "0.3.0"
 description = "A pretty simple text generation library"
 authors = ["arslee07 <mail@arslee.me>"]
 readme = "README.md"
