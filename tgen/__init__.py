@@ -3,8 +3,8 @@ from typing import Optional
 
 import umsgpack
 
-BEGIN_MARK = "_B"
-END_MARK = "_E"
+BEGIN_MARK = "\0"
+END_MARK = "\0\0"
 
 TextGeneratorModel = dict[str, set[str]]
 
