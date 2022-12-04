@@ -3,6 +3,9 @@ from typing import Optional
 
 import umsgpack
 
+BEGIN_MARK = "_B"
+END_MARK = "_E"
+
 TextGeneratorModel = dict[str, set[str]]
 
 
@@ -32,14 +35,14 @@ class TextGenerator:
     def feed(self, sample: str) -> None:
         """Feed text generation model."""
 
-        tokens = sample.split()
+        tokens = [BEGIN_MARK] + sample.split() + [END_MARK]
         for i in range(len(tokens) - 1):
             if tokens[i] not in self.model:
                 self.model[tokens[i]] = {tokens[i + 1]}
             else:
                 self.model[tokens[i]].add(tokens[i + 1])
 
-    def generate(self) -> str:
+    def generate(self, start_token=BEGIN_MARK) -> str:
         """Generate a text.
 
         Raises IndexError if the model is empty."""
@@ -47,11 +50,14 @@ class TextGenerator:
         if len(self.model) == 0:
             raise IndexError("Model is empty")
 
-        current = random.choice(list(self.model.keys()))
-        result = [current]
-        while current in self.model:
-            current = random.choice(list(self.model[current]))
+        if start_token not in self.model:
+            raise ValueError("Start token does not exist in model")
+
+        current = random.choice(list(self.model[start_token]))
+        result = [start_token] if start_token != BEGIN_MARK else []
+        while current in self.model and current != END_MARK:
             result.append(current)
+            current = random.choice(list(self.model[current]))
         return " ".join(result)
 
     def merge(self, other: "TextGenerator") -> None:
